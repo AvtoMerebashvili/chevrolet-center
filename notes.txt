@@ -1,0 +1,54 @@
+py-acr122u, py122u  lib for ACR122U
+
+
+VBA macro
+Sub OpenAndFilterExcelFile()
+    Dim wb As Workbook
+    Dim ws As Worksheet
+    Dim table As ListObject
+    Dim criteria As String
+    Dim filePath As String
+    Dim criteriaFilePath As String
+    Dim criteriaColumn As Integer
+    Dim cell As Range
+    Dim criteriaFound As Boolean
+
+    ' File paths
+    filePath = "path to file"
+    criteriaFilePath = "path to criteria file"
+
+    ' Read criteria from text file
+    Open criteriaFilePath For Input As #1
+    Line Input #1, criteria
+    Close #1
+
+    ' Open the Excel file
+    Set wb = Workbooks.Open(filePath)
+    Set ws = wb.Sheets("name of the sheet")
+    Set table = ws.ListObjects("name of the table")
+
+    ' Define the column to search for the criteria (change as needed)
+    criteriaColumn = 1 ' Assuming you want to search in the first column
+
+    ' Check if the criteria value exists in the specified column
+    criteriaFound = False
+    For Each cell In table.ListColumns(criteriaColumn).DataBodyRange
+        If cell.Value = criteria Then
+            criteriaFound = True
+            Exit For
+        End If
+    Next cell
+
+    ' Add a new row with criteria value if it does not exist
+    If Not criteriaFound Then
+        With table.ListRows.Add
+            .Range.Cells(1, criteriaColumn).Value = criteria
+             table.ListRows.Add
+            .Range.Cells(1, criteriaColumn + 1).Value = 0
+        End With
+    End If
+
+    ' Apply filter with dynamic criteria
+    table.Range.AutoFilter Field:=1, Criteria1:=criteria
+End Sub
+
