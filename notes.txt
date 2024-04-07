@@ -1,4 +1,10 @@
 py-acr122u, py122u  lib for ACR122U
+pip install pyscard for card listener
+
+
+http://www.acs.com.hk/en/products/3/acr122u-usb-nfc-reader/  ARC driver
+
+Raspberry Pi - executes python code at startUp 
 
 
 VBA macro
@@ -14,8 +20,8 @@ Sub OpenAndFilterExcelFile()
     Dim criteriaFound As Boolean
 
     ' File paths
-    filePath = "path to file"
-    criteriaFilePath = "path to criteria file"
+    filePath = "C:\Users\avtom\OneDrive\Desktop\chevrolet center\data\clients-table.xlsm"
+    criteriaFilePath = "C:\Users\avtom\OneDrive\Desktop\chevrolet center\data\criteria.txt"
 
     ' Read criteria from text file
     Open criteriaFilePath For Input As #1
@@ -24,8 +30,8 @@ Sub OpenAndFilterExcelFile()
 
     ' Open the Excel file
     Set wb = Workbooks.Open(filePath)
-    Set ws = wb.Sheets("name of the sheet")
-    Set table = ws.ListObjects("name of the table")
+    Set ws = wb.Sheets("clients")
+    Set table = ws.ListObjects("Clients_Table")
 
     ' Define the column to search for the criteria (change as needed)
     criteriaColumn = 1 ' Assuming you want to search in the first column
@@ -44,11 +50,20 @@ Sub OpenAndFilterExcelFile()
         With table.ListRows.Add
             .Range.Cells(1, criteriaColumn).Value = criteria
              table.ListRows.Add
-            .Range.Cells(1, criteriaColumn + 1).Value = 0
+            .Range.Cells(1, criteriaColumn + 1).Formula = 0
         End With
     End If
 
     ' Apply filter with dynamic criteria
     table.Range.AutoFilter Field:=1, Criteria1:=criteria
 End Sub
+
+
+
+
+
+cards with its default id
+ecxel table where key point is id of the card.(additional data is depend on user)
+executing nfc listener on os startap
+when connection happened executing script to open xlsm and filter by card id
 
